@@ -6,32 +6,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Registration - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="logo">
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('admin_landing') }}">Home</a></li>
-                <li><a href="{{ url_for('add_patient') }}">Patient Registration</a></li>
-                <li><a href="{{ url_for('account') }}">My Account</a></li>
-                <li><a href="{{ url_for('registered_patients') }}">Registered Patients</a></li>
+    <header class="bg-white shadow py-4">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-40">
+        <nav class="text-center">
+            <ul class="inline-flex space-x-4">
+                <li><a href="{{ url_for('admin_landing') }}" class="text-red-500">Home</a></li>
+                <li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
+                <li><a href="{{ url_for('account') }}" class="text-red-500">My Account</a></li>
+                <li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <h1>Welcome to Beat Care Admin Portal</h1>
-        <p>Manage patient registrations, view patient information, and maintain records efficiently.</p>
-        <img src="{{ url_for('static', filename='medical_care.jpg') }}" alt="Medical Care" class="main-image">
-        <p>Beat Care provides comprehensive care for cardiac and diabetic patients. Use the portal to register new patients, view their records, and manage your account.</p>
+    <main class="container mx-auto my-8 px-4">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h1 class="text-3xl font-bold text-red-600 mb-4">Welcome to Beat Care Admin Portal</h1>
+            <p class="mb-6">Manage patient registrations, view patient information, and maintain records efficiently.</p>
+            <img src="{{ url_for('static', filename='medical_care1.jpg') }}" alt="Medical Care" class="mx-auto w-full max-w-md rounded-lg shadow-md mb-6">
+            <p>Beat Care provides comprehensive care for cardiac patients. Use the portal to register new patients, view their records, and manage your account.</p>
+        </div>
     </main>
 
-    <footer>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="logo">
-        <p>Cardiac and Diabetic Portal</p>
-        <p>All rights reserved</p>
+    <footer class="bg-white py-6 mt-8 shadow-inner">
+        <div class="container mx-auto text-center">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-24 mb-4">
+            <p class="text-gray-600">Cardiac Portal</p>
+            <p class="text-gray-600">All rights reserved</p>
+        </div>
     </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>

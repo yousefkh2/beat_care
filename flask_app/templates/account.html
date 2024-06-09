@@ -2,24 +2,25 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="logo">
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('admin_landing') }}">Home</a></li>
-                <li><a href="{{ url_for('add_patient') }}">Patient Registration</a></li>
-                <li><a href="{{ url_for('account') }}">My Account</a></li>
-                <li><a href="{{ url_for('registered_patients') }}">Registered Patients</a></li>
-            </ul>
-        </nav>
-    </header>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Patient Registration - Admin</title>
+		<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	</head>
+	<body>
+		<header class="bg-white shadow py-4">
+			<img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-40">
+			<nav class="text-center">
+				<ul class="inline-flex space-x-4">
+					<li><a href="{{ url_for('admin_landing') }}" class="text-red-500">Home</a></li>
+					<li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
+					<li><a href="{{ url_for('account') }}" class="text-red-500">My Account</a></li>
+					<li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
+				</ul>
+			</nav>
+		</header>
 
     <main>
         <h1>My Account</h1>
@@ -28,7 +29,7 @@
 
     <footer>
         <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="logo">
-        <p>Cardiac and Diabetic Portal</p>
+        <p>Cardiac Portal</p>
         <p>All rights reserved</p>
     </footer>
 

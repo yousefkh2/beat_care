@@ -30,7 +30,7 @@ def account():
 @app.route('/admin/add_patient', methods=['GET', 'POST'])
 def add_patient():
     if request.method == 'POST':
-        required_fields = ['first_name', 'last_name', 'age', 'sex', 'identification_number', 'phone_number', 'address', 'next_of_kin_name', 'next_of_kin_phone', 'next_of_kin_address', 'next_of_kin_relation']
+        required_fields = ['first_name', 'last_name', 'age', 'sex', 'identification_number', 'phone_number', 'address', 'next_of_kin_name', 'next_of_kin_phone', 'next_of_kin_address', 'next_of_kin_relation', 'date_of_admission']
         for field in required_fields:
             if not request.form.get(field):
                 flash(f"Field '{field}' is required.")
@@ -50,6 +50,7 @@ def add_patient():
             'identification_number': request.form['identification_number'],
             'phone_number': request.form['phone_number'],
             'address': request.form['address'],
+            'date_of_admission': request.form['date_of_admission'],  # Add this line
             'insurance_number': request.form['insurance_number'],
             'insurance_company': request.form['insurance_company'],
             'insurance_type': request.form['insurance_type'],
@@ -79,15 +80,15 @@ def add_patient():
         cursor = conn.cursor()
         cursor.execute('''
             INSERT INTO patients (first_name, last_name, age, sex, identification_number, phone_number, address, 
-                insurance_number, insurance_company, insurance_type, next_of_kin_name, next_of_kin_phone, 
+                date_of_admission, insurance_number, insurance_company, insurance_type, next_of_kin_name, next_of_kin_phone, 
                 next_of_kin_address, next_of_kin_relation, icd10_code_main, icd10_main_symptoms, icd10_code_secondary, 
                 icd10_secondary_symptoms, primary_medication_name, primary_medication_purpose, primary_medication_dosage, 
                 primary_medication_side_effects, primary_medication_drug_interactions, primary_medication_food_interactions, 
                 secondary_medication_name, secondary_medication_purpose, secondary_medication_dosage, 
                 secondary_medication_side_effects, secondary_medication_drug_interactions, secondary_medication_food_interactions)
             VALUES (%(first_name)s, %(last_name)s, %(age)s, %(sex)s, %(identification_number)s, %(phone_number)s, %(address)s, 
-                %(insurance_number)s, %(insurance_company)s, %(insurance_type)s, %(next_of_kin_name)s, %(next_of_kin_phone)s, 
-                %(next_of_kin_address)s, %(next_of_kin_relation)s, %(icd10_code_main)s, %(icd10_main_symptoms)s, 
+                %(date_of_admission)s, %(insurance_number)s, %(insurance_company)s, %(insurance_type)s, %(next_of_kin_name)s, 
+                %(next_of_kin_phone)s, %(next_of_kin_address)s, %(next_of_kin_relation)s, %(icd10_code_main)s, %(icd10_main_symptoms)s, 
                 %(icd10_code_secondary)s, %(icd10_secondary_symptoms)s, %(primary_medication_name)s, %(primary_medication_purpose)s, 
                 %(primary_medication_dosage)s, %(primary_medication_side_effects)s, %(primary_medication_drug_interactions)s, 
                 %(primary_medication_food_interactions)s, %(secondary_medication_name)s, %(secondary_medication_purpose)s, 

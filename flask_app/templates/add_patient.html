@@ -1,91 +1,172 @@
 <!-- templates/add_patient.html -->
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Add Patient</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Patient</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
 <body>
-    <h1>Add Patient</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
+    <header class="bg-white shadow py-4">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-40">
+        <nav class="text-center">
+            <ul class="inline-flex space-x-4">
+                <li><a href="{{ url_for('admin_landing') }}" class="text-red-500">Home</a></li>
+                <li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
+                <li><a href="{{ url_for('account') }}" class="text-red-500">My Account</a></li>
+                <li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
             </ul>
-        {% endif %}
-    {% endwith %}
-    <form method="post">
-        <h3>Patient Information</h3>
-        <label for="first_name">First Name:</label><br>
-        <input type="text" id="first_name" name="first_name" required><br><br>
-        <label for="last_name">Last Name:</label><br>
-        <input type="text" id="last_name" name="last_name" required><br><br>
-        <label for="age">Age:</label><br>
-        <input type="number" id="age" name="age" required><br><br>
-        <label for="sex">Sex:</label><br>
-        <input type="text" id="sex" name="sex" required><br><br>
-        <label for="identification_number">Identification Number:</label><br>
-        <input type="text" id="identification_number" name="identification_number" required><br><br>
-        <label for="phone_number">Phone Number:</label><br>
-        <input type="text" id="phone_number" name="phone_number" required><br><br>
-        <label for="address">Address:</label><br>
-        <input type="text" id="address" name="address" required><br><br>
-        <h3>Insurance Information</h3>
-        <label for="insurance_number">Insurance Number:</label><br>
-        <input type="text" id="insurance_number" name="insurance_number"><br><br>
-        <label for="insurance_company">Name of Insurance Company:</label><br>
-        <input type="text" id="insurance_company" name="insurance_company"><br><br>
-        <label for="insurance_type">Insurance Type (Private/Public):</label><br>
-        <input type="text" id="insurance_type" name="insurance_type"><br><br>
-        <h3>Next of Kin and Emergency Contact Information</h3>
-        <label for="next_of_kin_name">Name of Next of Kin:</label><br>
-        <input type="text" id="next_of_kin_name" name="next_of_kin_name" required><br><br>
-        <label for="next_of_kin_phone">Phone Number:</label><br>
-        <input type="text" id="next_of_kin_phone" name="next_of_kin_phone" required><br><br>
-        <label for="next_of_kin_address">Address:</label><br>
-        <input type="text" id="next_of_kin_address" name="next_of_kin_address" required><br><br>
-        <label for="next_of_kin_relation">Relation to Patient:</label><br>
-        <input type="text" id="next_of_kin_relation" name="next_of_kin_relation" required><br><br>
-        <h3>Disease Profile</h3>
-        <label for="icd10_code_main">ICD 10 Code (Main Diagnosis):</label><br>
-        <input type="text" id="icd10_code_main" name="icd10_code_main"><br><br>
-        <label for="icd10_main_symptoms">Common Signs and Symptoms:</label><br>
-        <textarea id="icd10_main_symptoms" name="icd10_main_symptoms"></textarea><br><br>
-        <label for="icd10_code_secondary">ICD 10 Code (Secondary Diagnosis):</label><br>
-        <input type="text" id="icd10_code_secondary" name="icd10_code_secondary"><br><br>
-        <label for="icd10_secondary_symptoms">Common Signs and Symptoms:</label><br>
-        <textarea id="icd10_secondary_symptoms" name="icd10_secondary_symptoms"></textarea><br><br>
-        <h3>Medication List</h3>
-        <h4>Primary Medication</h4>
-        <label for="primary_medication_name">Name:</label><br>
-        <input type="text" id="primary_medication_name" name="primary_medication_name"><br><br>
-        <label for="primary_medication_purpose">Purpose:</label><br>
-        <textarea id="primary_medication_purpose" name="primary_medication_purpose"></textarea><br><br>
-        <label for="primary_medication_dosage">Dosage:</label><br>
-        <textarea id="primary_medication_dosage" name="primary_medication_dosage"></textarea><br><br>
-        <label for="primary_medication_side_effects">Common Side Effects:</label><br>
-        <textarea id="primary_medication_side_effects" name="primary_medication_side_effects"></textarea><br><br>
-        <label for="primary_medication_drug_interactions">Common Drug-Drug Interactions:</label><br>
-        <textarea id="primary_medication_drug_interactions" name="primary_medication_drug_interactions"></textarea><br><br>
-        <label for="primary_medication_food_interactions">Common Food-Drug Interactions:</label><br>
-        <textarea id="primary_medication_food_interactions" name="primary_medication_food_interactions"></textarea><br><br>
-        <h4>Secondary Medication</h4>
-        <label for="secondary_medication_name">Name:</label><br>
-        <input type="text" id="secondary_medication_name" name="secondary_medication_name"><br><br>
-        <label for="secondary_medication_purpose">Purpose:</label><br>
-        <textarea id="secondary_medication_purpose" name="secondary_medication_purpose"></textarea><br><br>
-        <label for="secondary_medication_dosage">Dosage:</label><br>
-        <textarea id="secondary_medication_dosage" name="secondary_medication_dosage"></textarea><br><br>
-        <label for="secondary_medication_side_effects">Common Side Effects:</label><br>
-        <textarea id="secondary_medication_side_effects" name="secondary_medication_side_effects"></textarea><br><br>
-        <label for="secondary_medication_drug_interactions">Common Drug-Drug Interactions:</label><br>
-        <textarea id="secondary_medication_drug_interactions" name="secondary_medication_drug_interactions"></textarea><br><br>
-        <label for="secondary_medication_food_interactions">Common Food-Drug Interactions:</label><br>
-        <textarea id="secondary_medication_food_interactions" name="secondary_medication_food_interactions"></textarea><br><br>
-        <input type="submit" value="Add Patient">
-    </form>
+        </nav>
+    </header>
+
+    <main class="max-w-lg mx-auto bg-white p-8 mt-6 shadow-lg rounded-lg">
+        <h1 class="text-2xl font-bold mb-4">Add Patient</h1>
+        <form method="post">
+            <div class="mb-4">
+                <label for="first_name" class="block text-gray-700 font-bold">First Name:</label>
+                <input type="text" id="first_name" name="first_name" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="last_name" class="block text-gray-700 font-bold">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="age" class="block text-gray-700 font-bold">Age:</label>
+                <input type="number" id="age" name="age" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="sex" class="block text-gray-700 font-bold">Sex:</label>
+                <select id="sex" name="sex" required class="w-full p-2 border border-gray-300 rounded">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="identification_number" class="block text-gray-700 font-bold">Identification Number:</label>
+                <input type="text" id="identification_number" name="identification_number" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="phone_number" class="block text-gray-700 font-bold">Phone Number:</label>
+                <input type="tel" id="phone_number" name="phone_number" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="address" class="block text-gray-700 font-bold">Address:</label>
+                <input type="text" id="address" name="address" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="date_of_admission" class="block text-gray-700 font-bold">Date of Admission:</label>
+                <input type="date" id="date_of_admission" name="date_of_admission" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <h3 class="text-xl font-bold mt-6 mb-4">Insurance Information</h3>
+            <div class="mb-4">
+                <label for="insurance_number" class="block text-gray-700 font-bold">Insurance Number:</label>
+                <input type="text" id="insurance_number" name="insurance_number" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="insurance_company" class="block text-gray-700 font-bold">Name of Insurance Company:</label>
+                <input type="text" id="insurance_company" name="insurance_company" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="insurance_type" class="block text-gray-700 font-bold">Insurance Type (Private/Public):</label>
+                <input type="text" id="insurance_type" name="insurance_type" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <h3 class="text-xl font-bold mt-6 mb-4">Next of Kin and Emergency Contact Information</h3>
+            <div class="mb-4">
+                <label for="next_of_kin_name" class="block text-gray-700 font-bold">Name of Next of Kin:</label>
+                <input type="text" id="next_of_kin_name" name="next_of_kin_name" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="next_of_kin_phone" class="block text-gray-700 font-bold">Phone Number:</label>
+                <input type="tel" id="next_of_kin_phone" name="next_of_kin_phone" pattern="[0-9]{10}" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="next_of_kin_address" class="block text-gray-700 font-bold">Address:</label>
+                <input type="text" id="next_of_kin_address" name="next_of_kin_address" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="next_of_kin_relation" class="block text-gray-700 font-bold">Relation to Patient:</label>
+                <input type="text" id="next_of_kin_relation" name="next_of_kin_relation" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <h3 class="text-xl font-bold mt-6 mb-4">Disease Profile</h3>
+            <div class="mb-4">
+                <label for="icd10_code_main" class="block text-gray-700 font-bold">ICD 10 Code (Main Diagnosis):</label>
+                <input type="text" id="icd10_code_main" name="icd10_code_main" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="icd10_main_symptoms" class="block text-gray-700 font-bold">Common Signs and Symptoms:</label>
+                <textarea id="icd10_main_symptoms" name="icd10_main_symptoms" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="icd10_code_secondary" class="block text-gray-700 font-bold">ICD 10 Code (Secondary Diagnosis):</label>
+                <input type="text" id="icd10_code_secondary" name="icd10_code_secondary" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="icd10_secondary_symptoms" class="block text-gray-700 font-bold">Common Signs and Symptoms:</label>
+                <textarea id="icd10_secondary_symptoms" name="icd10_secondary_symptoms" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <h3 class="text-xl font-bold mt-6 mb-4">Medication List</h3>
+            <h4 class="text-lg font-bold mt-4 mb-2">Primary Medication</h4>
+            <div class="mb-4">
+                <label for="primary_medication_name" class="block text-gray-700 font-bold">Name:</label>
+                <input type="text" id="primary_medication_name" name="primary_medication_name" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="primary_medication_purpose" class="block text-gray-700 font-bold">Purpose:</label>
+                <textarea id="primary_medication_purpose" name="primary_medication_purpose" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="primary_medication_dosage" class="block text-gray-700 font-bold">Dosage:</label>
+                <textarea id="primary_medication_dosage" name="primary_medication_dosage" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="primary_medication_side_effects" class="block text-gray-700 font-bold">Common Side Effects:</label>
+                <textarea id="primary_medication_side_effects" name="primary_medication_side_effects" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="primary_medication_drug_interactions" class="block text-gray-700 font-bold">Common Drug-Drug Interactions:</label>
+                <textarea id="primary_medication_drug_interactions" name="primary_medication_drug_interactions" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="primary_medication_food_interactions" class="block text-gray-700 font-bold">Common Food-Drug Interactions:</label>
+                <textarea id="primary_medication_food_interactions" name="primary_medication_food_interactions" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <h4 class="text-lg font-bold mt-4 mb-2">Secondary Medication</h4>
+            <div class="mb-4">
+                <label for="secondary_medication_name" class="block text-gray-700 font-bold">Name:</label>
+                <input type="text" id="secondary_medication_name" name="secondary_medication_name" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="secondary_medication_purpose" class="block text-gray-700 font-bold">Purpose:</label>
+                <textarea id="secondary_medication_purpose" name="secondary_medication_purpose" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="secondary_medication_dosage" class="block text-gray-700 font-bold">Dosage:</label>
+                <textarea id="secondary_medication_dosage" name="secondary_medication_dosage" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="secondary_medication_side_effects" class="block text-gray-700 font-bold">Common Side Effects:</label>
+                <textarea id="secondary_medication_side_effects" name="secondary_medication_side_effects" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="secondary_medication_drug_interactions" class="block text-gray-700 font-bold">Common Drug-Drug Interactions:</label>
+                <textarea id="secondary_medication_drug_interactions" name="secondary_medication_drug_interactions" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="secondary_medication_food_interactions" class="block text-gray-700 font-bold">Common Food-Drug Interactions:</label>
+                <textarea id="secondary_medication_food_interactions" name="secondary_medication_food_interactions" class="w-full p-2 border border-gray-300 rounded"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Add Patient</button>
+        </form>
+    </main>
+
+    <footer class="bg-white py-4 border-t border-gray-200 text-center">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-20">
+        <p>Cardiac Portal</p>
+        <p>All rights reserved</p>
+    </footer>
 </body>
 </html>
