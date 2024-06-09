@@ -17,6 +17,16 @@ def get_db_connection():
     )
     return conn
 
+
+@app.route('/')
+def admin_landing():
+    return render_template('admin_landing.html')
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
+
+
 @app.route('/admin/add_patient', methods=['GET', 'POST'])
 def add_patient():
     if request.method == 'POST':
@@ -108,6 +118,17 @@ def patient_view(patient_id):
         print("No patient found with this ID.")
 
     return render_template('patient_view.html', patient=patient)
+
+@app.route('/registered_patients')
+def registered_patients():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)  # Ensure the cursor returns dictionaries
+    cursor.execute('SELECT * FROM patients')
+    patients = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template('registered_patients.html', patients=patients)
 
 if __name__ == '__main__':
     app.run(debug=True)
