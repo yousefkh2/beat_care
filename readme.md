@@ -71,16 +71,16 @@ flask db upgrade
 flask run
 ```
 
-### Usage
-#### Admin Login:
+## Usage
+### Admin Login:
 - Email: admin@example.com
 - Password: 123456
-#### Adding Patients:
+### Adding Patients:
 - Navigate to the "Patient Registration" page to add new patients.
-#### Viewing Registered Patients:
+### Viewing Registered Patients:
 - Navigate to the "Registered Patients" page to view and delete patients.
 
-### Routes
+## Routes
 - / - Admin landing page
 - /login - Login page
 - /logout - Logout route
@@ -88,5 +88,5 @@ flask run
 - /patient/<int:patient_id> - View patient details (patient only)
 - /registered_patients - View all registered patients (admin only)
 - /about - About page
-### License
+## License
 This project is licensed under the MIT License. See the LICENSE file for details.
