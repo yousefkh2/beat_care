@@ -1,6 +1,4 @@
-# Beat Care
-
-Beat Care is a web application designed to manage patient information, specifically focused on cardiac care. The application provides features for patient registration, viewing registered patients, and managing user roles (admin and patient).
+Beat Care is a web application designed to manage patient information, specifically focused on cardiac care. The application provides features for patient registration, viewing registered patients, submitting vital signs, and managing user roles (admin and patient).
 
 ## Table of Contents
 
@@ -18,6 +16,7 @@ Beat Care is a web application designed to manage patient information, specifica
 - Patient registration with detailed medical information
 - Viewing registered patients
 - Deleting patients
+- Submitting and viewing vital signs
 - Flash messages for feedback
 - Responsive design with Tailwind CSS
 
@@ -27,66 +26,74 @@ Beat Care is a web application designed to manage patient information, specifica
 - Flask-SQLAlchemy
 - Flask-WTF
 - Flask-Login
+- Flask-Migrate
 - MySQL
 - Tailwind CSS
 
 ## Installation
 
-1. **Clone the repository**:
-   ```sh
-   git clone https://github.com/yousefkh2/beat_care.git
-   cd beat_care
-2. **Create a virtual environment**:
-```sh
-python3 -m venv venv
-source venv/bin/activate
-```
-3. **Install the dependencies**
-```sh
-pip install -r requirements.txt
-```
-4. **Set up the database:**
-- Make sure you have MySQL installed and running.
-- Create a new database named your_database (or use another name, but update your config accordingly).
-5. **Configure the application:**
-- Update the config.py file with your MySQL database credentials.
-- Example config.py:
-```python
-import os
+1. **Clone the repository:**
 
-class Config:
-    MYSQL_HOST = os.getenv('MYSQLHOST', 'localhost')
-    MYSQL_USER = os.getenv('MYSQLUSER', 'admin')
-    MYSQL_PASSWORD = os.getenv('MYSQLPASSWORD', 'password123')
-    MYSQL_DB = os.getenv('MYSQLDATABASE', 'your_database')
-    MYSQL_CURSORCLASS = 'DictCursor'
-    SECRET_KEY = 'your_secret_key'
-```
+    `git clone https://github.com/yousefkh2/beat_care.git cd beat_care`
+
+2. **Create a virtual environment:**
+
+    `python3 -m venv venv source venv/bin/activate`
+
+3. **Install the dependencies:**
+
+    `pip install -r requirements.txt`
+
+4. **Set up the database:**
+
+    - Make sure you have MySQL installed and running.
+    - Create a new database named `your_database` (or use another name, but update your config accordingly).
+5. **Configure the application:**
+
+    - Update the `config.py` file with your MySQL database credentials.
+
+    Example `config.py`:
+
+	`import os  class Config:     MYSQL_HOST = os.getenv('MYSQLHOST', 'localhost')     MYSQL_USER = os.getenv('MYSQLUSER', 'admin')     MYSQL_PASSWORD = os.getenv('MYSQLPASSWORD', 'password123')     MYSQL_DB = os.getenv('MYSQLDATABASE', 'your_database')     MYSQL_CURSORCLASS = 'DictCursor'     SECRET_KEY = 'your_secret_key'`
+
 6. **Create the database tables:**
-```sh
-flask db upgrade
-```
+
+    `flask db upgrade`
+
 7. **Run the application:**
-```sh
-flask run
-```
+
+    `flask run`
+
 
 ## Usage
+
 ### Admin Login:
-- Email: admin@example.com
-- Password: 123456
+
+- **Email:** admin@example.com
+- **Password:** 123456
+
 ### Adding Patients:
+
 - Navigate to the "Patient Registration" page to add new patients.
+
 ### Viewing Registered Patients:
+
 - Navigate to the "Registered Patients" page to view and delete patients.
 
+### Submitting Vital Signs:
+
+- Patients can log in and submit their vital signs.
+
 ## Routes
-- / - Admin landing page
-- /login - Login page
-- /logout - Logout route
-- /admin/add_patient - Add patient page (admin only)
-- /patient/<int:patient_id> - View patient details (patient only)
-- /registered_patients - View all registered patients (admin only)
-- /about - About page
+
+- `/` - Admin landing page
+- `/login` - Login page
+- `/logout` - Logout route
+- `/admin/add_patient` - Add patient page (admin only)
+- `/patient/<int:patient_id>` - View patient details and submit vital signs (patient only)
+- `/registered_patients` - View all registered patients (admin only)
+- `/about` - About page
+
 ## License
+
 This project is licensed under the MIT License. See the LICENSE file for details.

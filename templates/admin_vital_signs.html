@@ -1,0 +1,38 @@
+<!-- templates/admin_vital_signs.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Signs</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-7xl">
+        <h2 class="text-2xl font-bold mb-6 text-center">Vital Signs</h2>
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b">Patient Name</th>
+                    <th class="py-2 px-4 border-b">Heart Rate</th>
+                    <th class="py-2 px-4 border-b">Blood Pressure</th>
+                    <th class="py-2 px-4 border-b">Temperature</th>
+                    <th class="py-2 px-4 border-b">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vital in vital_signs %}
+                <tr>
+                    <td class="py-2 px-4 border-b">{{ vital.patient.first_name }} {{ vital.patient.last_name }}</td>
+                    <td class="py-2 px-4 border-b">{{ vital.heart_rate }}</td>
+                    <td class="py-2 px-4 border-b">{{ vital.blood_pressure }}</td>
+                    <td class="py-2 px-4 border-b">{{ vital.temperature }}</td>
+                    <td class="py-2 px-4 border-b">{{ vital.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

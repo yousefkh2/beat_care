@@ -6,6 +6,7 @@ from config import Config
 from forms import LoginForm
 from flask_migrate import Migrate
 import pymysql
+from datetime import datetime
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -35,7 +36,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(50), nullable=False)
 
     def set_password(self, password):
-        self.password = generate_password_hash(password)
+        self.password = generate_password_hash(password, method='scrypt')
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -54,49 +55,68 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return str(self.id)
-
-# Patient model
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(255), nullable=False)
-    last_name = db.Column(db.String(255), nullable=False)
+    first_name = db.Column(db.String(150), nullable=False)
+    last_name = db.Column(db.String(150), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     sex = db.Column(db.String(10), nullable=False)
     identification_number = db.Column(db.String(50), nullable=False)
     phone_number = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(255), nullable=False)
-    insurance_number = db.Column(db.String(50), nullable=True)
-    insurance_company = db.Column(db.String(255), nullable=True)
-    insurance_type = db.Column(db.String(50), nullable=True)
-    next_of_kin_name = db.Column(db.String(255), nullable=True)
-    next_of_kin_phone = db.Column(db.String(50), nullable=True)
-    next_of_kin_address = db.Column(db.String(255), nullable=True)
-    next_of_kin_relation = db.Column(db.String(50), nullable=True)
-    icd10_code_main = db.Column(db.String(50), nullable=True)
-    icd10_main_symptoms = db.Column(db.Text, nullable=True)
-    icd10_code_secondary = db.Column(db.String(50), nullable=True)
-    icd10_secondary_symptoms = db.Column(db.Text, nullable=True)
-    primary_medication_name = db.Column(db.String(255), nullable=True)
-    primary_medication_purpose = db.Column(db.Text, nullable=True)
-    primary_medication_dosage = db.Column(db.Text, nullable=True)
-    primary_medication_side_effects = db.Column(db.Text, nullable=True)
-    primary_medication_drug_interactions = db.Column(db.Text, nullable=True)
-    primary_medication_food_interactions = db.Column(db.Text, nullable=True)
-    secondary_medication_name = db.Column(db.String(255), nullable=True)
-    secondary_medication_purpose = db.Column(db.Text, nullable=True)
-    secondary_medication_dosage = db.Column(db.Text, nullable=True)
-    secondary_medication_side_effects = db.Column(db.Text, nullable=True)
-    secondary_medication_drug_interactions = db.Column(db.Text, nullable=True)
-    secondary_medication_food_interactions = db.Column(db.Text, nullable=True)
-    date_of_admission = db.Column(db.Date, nullable=True)
-    email = db.Column(db.String(150), unique=True, nullable=False)  # Add this line
+    date_of_admission = db.Column(db.Date, nullable=False)
+    insurance_number = db.Column(db.String(50))
+    insurance_company = db.Column(db.String(255))
+    insurance_type = db.Column(db.String(50))
+    next_of_kin_name = db.Column(db.String(255))
+    next_of_kin_phone = db.Column(db.String(50))
+    next_of_kin_address = db.Column(db.String(255))
+    next_of_kin_relation = db.Column(db.String(50))
+    icd10_code_main = db.Column(db.String(50))
+    icd10_main_symptoms = db.Column(db.Text)
+    icd10_code_secondary = db.Column(db.String(50))
+    icd10_secondary_symptoms = db.Column(db.Text)
+    primary_medication_name = db.Column(db.String(255))
+    primary_medication_purpose = db.Column(db.Text)
+    primary_medication_dosage = db.Column(db.Text)
+    primary_medication_side_effects = db.Column(db.Text)
+    primary_medication_drug_interactions = db.Column(db.Text)
+    primary_medication_food_interactions = db.Column(db.Text)
+    secondary_medication_name = db.Column(db.String(255))
+    secondary_medication_purpose = db.Column(db.Text)
+    secondary_medication_dosage = db.Column(db.Text)
+    secondary_medication_side_effects = db.Column(db.Text)
+    secondary_medication_drug_interactions = db.Column(db.Text)
+    secondary_medication_food_interactions = db.Column(db.Text)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
 
+class VitalSigns(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
+    heart_rate = db.Column(db.Integer, nullable=False)
+    blood_pressure = db.Column(db.String(20), nullable=False)
+    temperature = db.Column(db.Float, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    patient = db.relationship('Patient', back_populates='vital_signs')
+
+Patient.vital_signs = db.relationship('VitalSigns', order_by=VitalSigns.timestamp, back_populates='patient')
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Login route
+@app.route('/')
+def home():
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            return redirect(url_for('admin_landing'))
+        elif current_user.role == 'patient':
+            patient = Patient.query.filter_by(email=current_user.email).first()
+            return redirect(url_for('patient_view', patient_id=patient.id))
+    return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -107,47 +127,47 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('admin_landing'))
             elif user.role == 'patient':
-                return redirect(url_for('patient_view', patient_id=user.id))
-            else:
-                flash('Invalid role.', 'danger')
+                patient = Patient.query.filter_by(email=user.email).first()
+                return redirect(url_for('patient_view', patient_id=patient.id))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', form=form)
 
-@app.route('/')
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('login'))
+
+@app.route('/admin_landing')
 @login_required
 def admin_landing():
     if current_user.role != 'admin':
         return redirect(url_for('login'))
     return render_template('admin_landing.html')
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
 @app.route('/admin/add_patient', methods=['GET', 'POST'])
 @login_required
 def add_patient():
     if current_user.role != 'admin':
         return redirect(url_for('login'))
+
     if request.method == 'POST':
-        required_fields = ['first_name', 'last_name', 'age', 'sex', 'identification_number', 'phone_number', 'address', 'next_of_kin_name', 'next_of_kin_phone', 'next_of_kin_address', 'next_of_kin_relation', 'date_of_admission', 'email', 'password']
+        required_fields = [
+            'first_name', 'last_name', 'age', 'sex', 'identification_number', 'phone_number', 'address',
+            'next_of_kin_name', 'next_of_kin_phone', 'next_of_kin_address', 'next_of_kin_relation',
+            'date_of_admission', 'email', 'password'
+        ]
         for field in required_fields:
             if not request.form.get(field):
-                flash(f"Field '{field}' is required.")
+                flash(f"Field '{field}' is required.", 'danger')
                 return redirect(url_for('add_patient'))
 
         try:
             age = int(request.form['age'])
         except ValueError:
-            flash("Age must be an integer.")
+            flash("Age must be an integer.", 'danger')
             return redirect(url_for('add_patient'))
 
         data = {
@@ -159,83 +179,170 @@ def add_patient():
             'phone_number': request.form['phone_number'],
             'address': request.form['address'],
             'date_of_admission': request.form['date_of_admission'],
-            'insurance_number': request.form['insurance_number'],
-            'insurance_company': request.form['insurance_company'],
-            'insurance_type': request.form['insurance_type'],
+            'insurance_number': request.form.get('insurance_number'),
+            'insurance_company': request.form.get('insurance_company'),
+            'insurance_type': request.form.get('insurance_type'),
             'next_of_kin_name': request.form['next_of_kin_name'],
             'next_of_kin_phone': request.form['next_of_kin_phone'],
             'next_of_kin_address': request.form['next_of_kin_address'],
             'next_of_kin_relation': request.form['next_of_kin_relation'],
-            'icd10_code_main': request.form['icd10_code_main'],
-            'icd10_main_symptoms': request.form['icd10_main_symptoms'],
-            'icd10_code_secondary': request.form['icd10_code_secondary'],
-            'icd10_secondary_symptoms': request.form['icd10_secondary_symptoms'],
-            'primary_medication_name': request.form['primary_medication_name'],
-            'primary_medication_purpose': request.form['primary_medication_purpose'],
-            'primary_medication_dosage': request.form['primary_medication_dosage'],
-            'primary_medication_side_effects': request.form['primary_medication_side_effects'],
-            'primary_medication_drug_interactions': request.form['primary_medication_drug_interactions'],
-            'primary_medication_food_interactions': request.form['primary_medication_food_interactions'],
-            'secondary_medication_name': request.form['secondary_medication_name'],
-            'secondary_medication_purpose': request.form['secondary_medication_purpose'],
-            'secondary_medication_dosage': request.form['secondary_medication_dosage'],
-            'secondary_medication_side_effects': request.form['secondary_medication_side_effects'],
-            'secondary_medication_drug_interactions': request.form['secondary_medication_drug_interactions'],
-            'secondary_medication_food_interactions': request.form['secondary_medication_food_interactions'],
-            'email': request.form['email']
+            'icd10_code_main': request.form.get('icd10_code_main'),
+            'icd10_main_symptoms': request.form.get('icd10_main_symptoms'),
+            'icd10_code_secondary': request.form.get('icd10_code_secondary'),
+            'icd10_secondary_symptoms': request.form.get('icd10_secondary_symptoms'),
+            'primary_medication_name': request.form.get('primary_medication_name'),
+            'primary_medication_purpose': request.form.get('primary_medication_purpose'),
+            'primary_medication_dosage': request.form.get('primary_medication_dosage'),
+            'primary_medication_side_effects': request.form.get('primary_medication_side_effects'),
+            'primary_medication_drug_interactions': request.form.get('primary_medication_drug_interactions'),
+            'primary_medication_food_interactions': request.form.get('primary_medication_food_interactions'),
+            'secondary_medication_name': request.form.get('secondary_medication_name'),
+            'secondary_medication_purpose': request.form.get('secondary_medication_purpose'),
+            'secondary_medication_dosage': request.form.get('secondary_medication_dosage'),
+            'secondary_medication_side_effects': request.form.get('secondary_medication_side_effects'),
+            'secondary_medication_drug_interactions': request.form.get('secondary_medication_drug_interactions'),
+            'secondary_medication_food_interactions': request.form.get('secondary_medication_food_interactions'),
+            'email': request.form['email'],
+            'password': request.form['password']
         }
 
-        new_patient = Patient(**data)
+        # Check if email already exists
+        existing_user = User.query.filter_by(email=data['email']).first()
+        if existing_user:
+            flash("Email address already in use.", 'danger')
+            return redirect(url_for('add_patient'))
+
+        # Add patient to database
+        new_patient = Patient(
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            age=data['age'],
+            sex=data['sex'],
+            identification_number=data['identification_number'],
+            phone_number=data['phone_number'],
+            address=data['address'],
+            date_of_admission=data['date_of_admission'],
+            insurance_number=data['insurance_number'],
+            insurance_company=data['insurance_company'],
+            insurance_type=data['insurance_type'],
+            next_of_kin_name=data['next_of_kin_name'],
+            next_of_kin_phone=data['next_of_kin_phone'],
+            next_of_kin_address=data['next_of_kin_address'],
+            next_of_kin_relation=data['next_of_kin_relation'],
+            icd10_code_main=data['icd10_code_main'],
+            icd10_main_symptoms=data['icd10_main_symptoms'],
+            icd10_code_secondary=data['icd10_code_secondary'],
+            icd10_secondary_symptoms=data['icd10_secondary_symptoms'],
+            primary_medication_name=data['primary_medication_name'],
+            primary_medication_purpose=data['primary_medication_purpose'],
+            primary_medication_dosage=data['primary_medication_dosage'],
+            primary_medication_side_effects=data['primary_medication_side_effects'],
+            primary_medication_drug_interactions=data['primary_medication_drug_interactions'],
+            primary_medication_food_interactions=data['primary_medication_food_interactions'],
+            secondary_medication_name=data['secondary_medication_name'],
+            secondary_medication_purpose=data['secondary_medication_purpose'],
+            secondary_medication_dosage=data['secondary_medication_dosage'],
+            secondary_medication_side_effects=data['secondary_medication_side_effects'],
+            secondary_medication_drug_interactions=data['secondary_medication_drug_interactions'],
+            secondary_medication_food_interactions=data['secondary_medication_food_interactions'],
+            email=data['email'],
+            password=data['password']
+        )
         db.session.add(new_patient)
-        db.session.commit()
 
-        # Create user account for patient
-        patient_email = request.form['email']
-        patient_password = request.form['password']  # Use the password provided by the admin
-        new_user = User(email=patient_email, role='patient')
-        new_user.set_password(patient_password)
+        # Add user account for patient
+        new_user = User(email=data['email'], role='patient')
+        new_user.set_password(data['password'])
         db.session.add(new_user)
+
         db.session.commit()
 
-        flash("Patient added and user account created successfully.", "success")
+        flash("Patient added successfully.", 'success')
         return redirect(url_for('add_patient'))
     return render_template('add_patient.html')
 
-
-@app.route('/delete_patient/<int:patient_id>', methods=['POST'])
-@login_required
-def delete_patient(patient_id):
-    if current_user.role != 'admin':
-        return redirect(url_for('login'))
-    
-    patient = Patient.query.get_or_404(patient_id)
-    db.session.delete(patient)
-    db.session.commit()
-    flash("Patient deleted successfully.", "success")
-    return redirect(url_for('registered_patients'))
-
-
-
-@app.route('/patient/<int:patient_id>')
+@app.route('/patient/<int:patient_id>', methods=['GET', 'POST'])
 @login_required
 def patient_view(patient_id):
-    if current_user.role != 'patient' or current_user.id != patient_id:
-        return redirect(url_for('login'))
     patient = Patient.query.get_or_404(patient_id)
-    if patient:
-        print(f"Patient data: {patient}")  # Log fetched patient data
-    else:
-        print("No patient found with this ID.")
+    if request.method == 'POST':
+        heart_rate = request.form.get('heart_rate')
+        blood_pressure = request.form.get('blood_pressure')
+        temperature = request.form.get('temperature')
+        
+        if heart_rate and blood_pressure and temperature:
+            new_vital_sign = VitalSigns(
+                patient_id=patient_id,
+                heart_rate=heart_rate,
+                blood_pressure=blood_pressure,
+                temperature=temperature
+            )
+            db.session.add(new_vital_sign)
+            db.session.commit()
+            flash('Vital signs submitted successfully.', 'success')
+        else:
+            flash('All fields are required.', 'danger')
+        return redirect(url_for('patient_view', patient_id=patient_id))
+
     return render_template('patient_view.html', patient=patient)
 
+
+@app.route('/admin/vital_signs')
+@login_required
+def admin_vital_signs():
+    if current_user.role != 'admin':
+        return redirect(url_for('login'))
+
+    vital_signs = VitalSigns.query.all()
+    return render_template('admin_vital_signs.html', vital_signs=vital_signs)
+
+@app.route('/submit_vital_signs/<int:patient_id>', methods=['POST'])
+@login_required
+def submit_vital_signs(patient_id):
+    if current_user.role != 'patient' or current_user.id != patient_id:
+        return redirect(url_for('login'))
+
+    heart_rate = request.form['heart_rate']
+    blood_pressure = request.form['blood_pressure']
+    temperature = request.form['temperature']
+
+    new_vital_signs = VitalSigns(
+        patient_id=patient_id,
+        heart_rate=heart_rate,
+        blood_pressure=blood_pressure,
+        temperature=temperature
+    )
+
+    db.session.add(new_vital_signs)
+    db.session.commit()
+
+    flash("Vital signs submitted successfully.", 'success')
+    return redirect(url_for('patient_view', patient_id=patient_id))
 
 @app.route('/registered_patients')
 @login_required
 def registered_patients():
     if current_user.role != 'admin':
         return redirect(url_for('login'))
+
     patients = Patient.query.all()
     return render_template('registered_patients.html', patients=patients)
+
+@app.route('/delete_patient/<int:patient_id>', methods=['POST'])
+@login_required
+def delete_patient(patient_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('login'))
+
+    patient = Patient.query.get_or_404(patient_id)
+    db.session.delete(patient)
+    db.session.commit()
+    flash("Patient deleted successfully.", 'success')
+    return redirect(url_for('registered_patients'))
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

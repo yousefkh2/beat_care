@@ -5,9 +5,36 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 text-gray-800">
+    <header class="bg-white shadow py-4">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-40">
+        <nav class="text-center">
+            <ul class="inline-flex space-x-4">
+                <li><a href="{{ url_for('patient_view', patient_id=current_user.id) }}" class="text-red-500">Home</a></li>
+                <li><a href="{{ url_for('logout') }}" class="text-red-500">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto bg-white p-8 mt-6 shadow-lg rounded-lg">
+        <h1 class="text-2xl font-bold mb-4">Welcome, {{ patient.first_name }} {{ patient.last_name }}</h1>
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mb-4">
+              {% for category, message in messages %}
+                <div class="bg-{{ 'green' if category == 'success' else 'red' }}-100 border border-{{ 'green' if category == 'success' else 'red' }}-400 text-{{ 'green' if category == 'success' else 'red' }}-700 px-4 py-3 rounded relative" role="alert">
+                  <strong class="font-bold">{{ message }}</strong>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
     <div class="container mx-auto p-6">
         <h1 class="text-3xl font-bold text-center mb-6">Patient Information</h1>
         {% if patient %}
+            </div>
+
             <div class="bg-white shadow-md rounded-lg p-6 mb-6">
                 <h2 class="text-2xl font-semibold mb-4">Personal Details</h2>
                 <p><strong>First Name:</strong> {{ patient['first_name'] }}</p>
@@ -64,11 +91,56 @@
                     <p><strong>Common Food-Drug Interactions:</strong> {{ patient['secondary_medication_food_interactions'] }}</p>
                 </div>
             </div>
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold">Submit Vital Signs</h3>
+                <form method="POST" action="{{ url_for('submit_vital_signs', patient_id=patient.id) }}" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Heart Rate</label>
+                        <input type="number" name="heart_rate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Blood Pressure</label>
+                        <input type="text" name="blood_pressure" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Temperature</label>
+                        <input type="number" step="0.1" name="temperature" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" required>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">Submit</button>
+                    </div>
+                </form>
+            </div>
+    
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold">Vital Signs History</h3>
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">Date</th>
+                            <th class="py-2 px-4 border-b">Heart Rate</th>
+                            <th class="py-2 px-4 border-b">Blood Pressure</th>
+                            <th class="py-2 px-4 border-b">Temperature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vital in patient.vital_signs %}
+                        <tr>
+                            <td class="py-2 px-4 border-b">{{ vital.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td class="py-2 px-4 border-b">{{ vital.heart_rate }}</td>
+                            <td class="py-2 px-4 border-b">{{ vital.blood_pressure }}</td>
+                            <td class="py-2 px-4 border-b">{{ vital.temperature }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
             <div class="bg-red-100 text-red-800 p-4 rounded-lg">
                 <p>No patient found with this ID.</p>
             </div>
         {% endif %}
     </div>
+    </main>
 </body>
 </html>
