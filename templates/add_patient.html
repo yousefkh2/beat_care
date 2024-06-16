@@ -18,6 +18,7 @@
                 <li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
                 <li><a href="{{ url_for('account') }}" class="text-red-500">My Account</a></li>
                 <li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
+                <li><a href="{{ url_for('logout') }}" class="text-red-500">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -32,6 +33,14 @@
             <div class="mb-4">
                 <label for="last_name" class="block text-gray-700 font-bold">Last Name:</label>
                 <input type="text" id="last_name" name="last_name" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-bold">Email:</label>
+                <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="password" class="block text-gray-700 font-bold">Password</label>
+                <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded">
             </div>
             <div class="mb-4">
                 <label for="age" class="block text-gray-700 font-bold">Age:</label>
