@@ -1,54 +1,73 @@
-<!-- templates/patient_view.html -->
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Patient View</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>Patient Information</h1>
+<body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-6">Patient Information</h1>
         {% if patient %}
-            <p><strong>First Name:</strong> {{ patient['first_name'] }}</p>
-            <p><strong>Last Name:</strong> {{ patient['last_name'] }}</p>
-            <p><strong>Age:</strong> {{ patient['age'] }}</p>
-            <p><strong>Sex:</strong> {{ patient['sex'] }}</p>
-            <p><strong>Identification Number:</strong> {{ patient['identification_number'] }}</p>
-            <p><strong>Phone Number:</strong> {{ patient['phone_number'] }}</p>
-            <p><strong>Address:</strong> {{ patient['address'] }}</p>
-            <p><strong>Date of Admission:</strong> {{ patient['date_of_admission'] }}</p>
-            <h3>Insurance Information</h3>
-            <p><strong>Insurance Number:</strong> {{ patient['insurance_number'] }}</p>
-            <p><strong>Insurance Company:</strong> {{ patient['insurance_company'] }}</p>
-            <p><strong>Insurance Type:</strong> {{ patient['insurance_type'] }}</p>
-            <h3>Next of Kin and Emergency Contact Information</h3>
-            <p><strong>Name of Next of Kin:</strong> {{ patient['next_of_kin_name'] }}</p>
-            <p><strong>Phone Number:</strong> {{ patient['next_of_kin_phone'] }}</p>
-            <p><strong>Address:</strong> {{ patient['next_of_kin_address'] }}</p>
-            <p><strong>Relation to Patient:</strong> {{ patient['next_of_kin_relation'] }}</p>
-            <h3>Disease Profile</h3>
-            <p><strong>ICD 10 Code (Main Diagnosis):</strong> {{ patient['icd10_code_main'] }}</p>
-            <p><strong>Common Signs and Symptoms:</strong> {{ patient['icd10_main_symptoms'] }}</p>
-            <p><strong>ICD 10 Code (Secondary Diagnosis):</strong> {{ patient['icd10_code_secondary'] }}</p>
-            <p><strong>Common Signs and Symptoms:</strong> {{ patient['icd10_secondary_symptoms'] }}</p>
-            <h3>Medication List</h3>
-            <h4>Primary Medication</h4>
-            <p><strong>Name:</strong> {{ patient['primary_medication_name'] }}</p>
-            <p><strong>Purpose:</strong> {{ patient['primary_medication_purpose'] }}</p>
-            <p><strong>Dosage:</strong> {{ patient['primary_medication_dosage'] }}</p>
-            <p><strong>Common Side Effects:</strong> {{ patient['primary_medication_side_effects'] }}</p>
-            <p><strong>Common Drug-Drug Interactions:</strong> {{ patient['primary_medication_drug_interactions'] }}</p>
-            <p><strong>Common Food-Drug Interactions:</strong> {{ patient['primary_medication_food_interactions'] }}</p>
-            <h4>Secondary Medication</h4>
-            <p><strong>Name:</strong> {{ patient['secondary_medication_name'] }}</p>
-            <p><strong>Purpose:</strong> {{ patient['secondary_medication_purpose'] }}</p>
-            <p><strong>Dosage:</strong> {{ patient['secondary_medication_dosage'] }}</p>
-            <p><strong>Common Side Effects:</strong> {{ patient['secondary_medication_side_effects'] }}</p>
-            <p><strong>Common Drug-Drug Interactions:</strong> {{ patient['secondary_medication_drug_interactions'] }}</p>
-            <p><strong>Common Food-Drug Interactions:</strong> {{ patient['secondary_medication_food_interactions'] }}</p>
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Personal Details</h2>
+                <p><strong>First Name:</strong> {{ patient['first_name'] }}</p>
+                <p><strong>Last Name:</strong> {{ patient['last_name'] }}</p>
+                <p><strong>Age:</strong> {{ patient['age'] }}</p>
+                <p><strong>Sex:</strong> {{ patient['sex'] }}</p>
+                <p><strong>Identification Number:</strong> {{ patient['identification_number'] }}</p>
+                <p><strong>Phone Number:</strong> {{ patient['phone_number'] }}</p>
+                <p><strong>Address:</strong> {{ patient['address'] }}</p>
+                <p><strong>Date of Admission:</strong> {{ patient['date_of_admission'] }}</p>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Insurance Information</h2>
+                <p><strong>Insurance Number:</strong> {{ patient['insurance_number'] }}</p>
+                <p><strong>Insurance Company:</strong> {{ patient['insurance_company'] }}</p>
+                <p><strong>Insurance Type:</strong> {{ patient['insurance_type'] }}</p>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Next of Kin and Emergency Contact Information</h2>
+                <p><strong>Name of Next of Kin:</strong> {{ patient['next_of_kin_name'] }}</p>
+                <p><strong>Phone Number:</strong> {{ patient['next_of_kin_phone'] }}</p>
+                <p><strong>Address:</strong> {{ patient['next_of_kin_address'] }}</p>
+                <p><strong>Relation to Patient:</strong> {{ patient['next_of_kin_relation'] }}</p>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Disease Profile</h2>
+                <p><strong>ICD 10 Code (Main Diagnosis):</strong> {{ patient['icd10_code_main'] }}</p>
+                <p><strong>Common Signs and Symptoms:</strong> {{ patient['icd10_main_symptoms'] }}</p>
+                <p><strong>ICD 10 Code (Secondary Diagnosis):</strong> {{ patient['icd10_code_secondary'] }}</p>
+                <p><strong>Common Signs and Symptoms:</strong> {{ patient['icd10_secondary_symptoms'] }}</p>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Medication List</h2>
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold mb-2">Primary Medication</h3>
+                    <p><strong>Name:</strong> {{ patient['primary_medication_name'] }}</p>
+                    <p><strong>Purpose:</strong> {{ patient['primary_medication_purpose'] }}</p>
+                    <p><strong>Dosage:</strong> {{ patient['primary_medication_dosage'] }}</p>
+                    <p><strong>Common Side Effects:</strong> {{ patient['primary_medication_side_effects'] }}</p>
+                    <p><strong>Common Drug-Drug Interactions:</strong> {{ patient['primary_medication_drug_interactions'] }}</p>
+                    <p><strong>Common Food-Drug Interactions:</strong> {{ patient['primary_medication_food_interactions'] }}</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Secondary Medication</h3>
+                    <p><strong>Name:</strong> {{ patient['secondary_medication_name'] }}</p>
+                    <p><strong>Purpose:</strong> {{ patient['secondary_medication_purpose'] }}</p>
+                    <p><strong>Dosage:</strong> {{ patient['secondary_medication_dosage'] }}</p>
+                    <p><strong>Common Side Effects:</strong> {{ patient['secondary_medication_side_effects'] }}</p>
+                    <p><strong>Common Drug-Drug Interactions:</strong> {{ patient['secondary_medication_drug_interactions'] }}</p>
+                    <p><strong>Common Food-Drug Interactions:</strong> {{ patient['secondary_medication_food_interactions'] }}</p>
+                </div>
+            </div>
         {% else %}
-            <p>No patient found with this ID.</p>
+            <div class="bg-red-100 text-red-800 p-4 rounded-lg">
+                <p>No patient found with this ID.</p>
+            </div>
         {% endif %}
     </div>
 </body>

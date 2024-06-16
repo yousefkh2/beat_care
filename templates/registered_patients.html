@@ -16,8 +16,8 @@
             <ul class="inline-flex space-x-4">
                 <li><a href="{{ url_for('admin_landing') }}" class="text-red-500">Home</a></li>
                 <li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
-                <li><a href="{{ url_for('account') }}" class="text-red-500">My Account</a></li>
                 <li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
+                <li><a href="{{ url_for('about') }}" class="text-red-500">About</a></li>
                 <li><a href="{{ url_for('logout') }}" class="text-red-500">Logout</a></li>
             </ul>
         </nav>
@@ -25,6 +25,21 @@
 
     <main class="max-w-7xl mx-auto bg-white p-8 mt-6 shadow-lg rounded-lg">
         <h1 class="text-2xl font-bold mb-4">Registered Patients</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert p-4 mb-4 text-sm rounded-lg {{ 'bg-green-100 text-green-700' if category == 'success' else '' }} {{ 'bg-red-100 text-red-700' if category == 'danger' else '' }} {{ 'bg-yellow-100 text-yellow-700' if category == 'warning' else '' }} {{ 'bg-blue-100 text-blue-700' if category == 'info' else '' }}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+        
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white">
                 <thead>
@@ -38,6 +53,7 @@
                         <th class="py-2 px-4 border-b">Phone Number</th>
                         <th class="py-2 px-4 border-b">Address</th>
 						<th class="py-2 px-4 border-b">Date of Admission</th>
+                        <th class="py-2 px-4 border-b">Email</th>
                         <th class="py-2 px-4 border-b">Insurance Number</th>
                         <th class="py-2 px-4 border-b">Insurance Company</th>
                         <th class="py-2 px-4 border-b">Insurance Type</th>
@@ -59,6 +75,7 @@
                         <th class="py-2 px-4 border-b">Secondary Medication Dosage</th>
                         <th class="py-2 px-4 border-b">Secondary Medication Side Effects</th>
                         <th class="py-2 px-4 border-b">Secondary Medication Interactions</th>
+                        <th class="py-2 px-4 border-b">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,6 +90,7 @@
                         <td class="py-2 px-4 border-b">{{ patient.phone_number }}</td>
                         <td class="py-2 px-4 border-b">{{ patient.address }}</td>
 						<td class="py-2 px-4 border-b">{{ patient.date_of_admission }}</td>
+                        <td class="py-2 px-4 border-b">{{ patient.email }}</td>
                         <td class="py-2 px-4 border-b">{{ patient.insurance_number }}</td>
                         <td class="py-2 px-4 border-b">{{ patient.insurance_company }}</td>
                         <td class="py-2 px-4 border-b">{{ patient.insurance_type }}</td>
@@ -94,6 +112,11 @@
                         <td class="py-2 px-4 border-b">{{ patient.secondary_medication_dosage }}</td>
                         <td class="py-2 px-4 border-b">{{ patient.secondary_medication_side_effects }}</td>
                         <td class="py-2 px-4 border-b">{{ patient.secondary_medication_drug_interactions }}</td>
+                        <td class="py-2 px-4 border-b">
+                            <form action="{{ url_for('delete_patient', patient_id=patient.id) }}" method="post">
+                                <button type="submit" class="bg-red-500 text-white px-4 py-1 rounded">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

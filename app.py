@@ -121,9 +121,10 @@ def admin_landing():
         return redirect(url_for('login'))
     return render_template('admin_landing.html')
 
-@app.route('/account')
-def account():
-    return render_template('account.html')
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 
 @app.route('/logout')
 @login_required
@@ -196,9 +197,22 @@ def add_patient():
         db.session.add(new_user)
         db.session.commit()
 
-        flash("Patient added and user account created successfully.")
+        flash("Patient added and user account created successfully.", "success")
         return redirect(url_for('add_patient'))
     return render_template('add_patient.html')
+
+
+@app.route('/delete_patient/<int:patient_id>', methods=['POST'])
+@login_required
+def delete_patient(patient_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('login'))
+    
+    patient = Patient.query.get_or_404(patient_id)
+    db.session.delete(patient)
+    db.session.commit()
+    flash("Patient deleted successfully.", "success")
+    return redirect(url_for('registered_patients'))
 
 
 

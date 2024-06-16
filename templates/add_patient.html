@@ -16,8 +16,8 @@
             <ul class="inline-flex space-x-4">
                 <li><a href="{{ url_for('admin_landing') }}" class="text-red-500">Home</a></li>
                 <li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
-                <li><a href="{{ url_for('account') }}" class="text-red-500">My Account</a></li>
                 <li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
+                <li><a href="{{ url_for('about') }}" class="text-red-500">About</a></li>
                 <li><a href="{{ url_for('logout') }}" class="text-red-500">Logout</a></li>
             </ul>
         </nav>
@@ -25,6 +25,19 @@
 
     <main class="max-w-lg mx-auto bg-white p-8 mt-6 shadow-lg rounded-lg">
         <h1 class="text-2xl font-bold mb-4">Add Patient</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert p-4 mb-4 text-sm rounded-lg {{ 'bg-green-100 text-green-700' if category == 'success' else '' }} {{ 'bg-red-100 text-red-700' if category == 'danger' else '' }} {{ 'bg-yellow-100 text-yellow-700' if category == 'warning' else '' }} {{ 'bg-blue-100 text-blue-700' if category == 'info' else '' }}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
         <form method="post">
             <div class="mb-4">
                 <label for="first_name" class="block text-gray-700 font-bold">First Name:</label>
