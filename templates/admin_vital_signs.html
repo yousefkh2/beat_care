@@ -8,31 +8,46 @@
     <title>Vital Signs</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-7xl">
-        <h2 class="text-2xl font-bold mb-6 text-center">Vital Signs</h2>
-        <table class="min-w-full bg-white">
-            <thead>
-                <tr>
-                    <th class="py-2 px-4 border-b">Patient Name</th>
-                    <th class="py-2 px-4 border-b">Heart Rate</th>
-                    <th class="py-2 px-4 border-b">Blood Pressure</th>
-                    <th class="py-2 px-4 border-b">Temperature</th>
-                    <th class="py-2 px-4 border-b">Timestamp</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for vital in vital_signs %}
-                <tr>
-                    <td class="py-2 px-4 border-b">{{ vital.patient.first_name }} {{ vital.patient.last_name }}</td>
-                    <td class="py-2 px-4 border-b">{{ vital.heart_rate }}</td>
-                    <td class="py-2 px-4 border-b">{{ vital.blood_pressure }}</td>
-                    <td class="py-2 px-4 border-b">{{ vital.temperature }}</td>
-                    <td class="py-2 px-4 border-b">{{ vital.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <header class="bg-white shadow py-4">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Beat Care Logo" class="mx-auto w-40">
+        <nav class="text-center">
+            <ul class="inline-flex space-x-4">
+                <li><a href="{{ url_for('admin_landing') }}" class="text-red-500">Home</a></li>
+                <li><a href="{{ url_for('add_patient') }}" class="text-red-500">Patient Registration</a></li>
+                <li><a href="{{ url_for('registered_patients') }}" class="text-red-500">Registered Patients</a></li>
+                <li><a href="{{ url_for('admin_vital_signs') }}" class="text-red-500">Vital Signs</a></li>
+                <li><a href="{{ url_for('about') }}" class="text-red-500">About</a></li>
+                <li><a href="{{ url_for('logout') }}" class="text-red-500">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="flex-grow flex items-center justify-center">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-7xl">
+            <h2 class="text-2xl font-bold mb-6 text-center">Vital Signs</h2>
+            <table class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Patient Name</th>
+                        <th class="py-2 px-4 border-b">Heart Rate</th>
+                        <th class="py-2 px-4 border-b">Blood Pressure</th>
+                        <th class="py-2 px-4 border-b">Temperature</th>
+                        <th class="py-2 px-4 border-b">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vital in vital_signs %}
+                    <tr>
+                        <td class="py-2 px-4 border-b">{{ vital.patient.first_name }} {{ vital.patient.last_name }}</td>
+                        <td class="py-2 px-4 border-b">{{ vital.heart_rate }}</td>
+                        <td class="py-2 px-4 border-b">{{ vital.blood_pressure }}</td>
+                        <td class="py-2 px-4 border-b">{{ vital.temperature }}</td>
+                        <td class="py-2 px-4 border-b">{{ vital.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 </html>

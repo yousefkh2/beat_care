@@ -7,6 +7,7 @@ from forms import LoginForm
 from flask_migrate import Migrate
 import pymysql
 from datetime import datetime
+from models import db, Patient, VitalSigns
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -20,7 +21,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{user}:{password}@{host
     host=app.config['MYSQL_HOST'],
     db=app.config['MYSQL_DB']
 )
-db = SQLAlchemy(app)
+
+db.init_app(app)
+
 migrate = Migrate(app, db)
 
 # Initialize Flask-Login
@@ -55,51 +58,7 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return str(self.id)
-class Patient(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(150), nullable=False)
-    last_name = db.Column(db.String(150), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-    sex = db.Column(db.String(10), nullable=False)
-    identification_number = db.Column(db.String(50), nullable=False)
-    phone_number = db.Column(db.String(50), nullable=False)
-    address = db.Column(db.String(255), nullable=False)
-    date_of_admission = db.Column(db.Date, nullable=False)
-    insurance_number = db.Column(db.String(50))
-    insurance_company = db.Column(db.String(255))
-    insurance_type = db.Column(db.String(50))
-    next_of_kin_name = db.Column(db.String(255))
-    next_of_kin_phone = db.Column(db.String(50))
-    next_of_kin_address = db.Column(db.String(255))
-    next_of_kin_relation = db.Column(db.String(50))
-    icd10_code_main = db.Column(db.String(50))
-    icd10_main_symptoms = db.Column(db.Text)
-    icd10_code_secondary = db.Column(db.String(50))
-    icd10_secondary_symptoms = db.Column(db.Text)
-    primary_medication_name = db.Column(db.String(255))
-    primary_medication_purpose = db.Column(db.Text)
-    primary_medication_dosage = db.Column(db.Text)
-    primary_medication_side_effects = db.Column(db.Text)
-    primary_medication_drug_interactions = db.Column(db.Text)
-    primary_medication_food_interactions = db.Column(db.Text)
-    secondary_medication_name = db.Column(db.String(255))
-    secondary_medication_purpose = db.Column(db.Text)
-    secondary_medication_dosage = db.Column(db.Text)
-    secondary_medication_side_effects = db.Column(db.Text)
-    secondary_medication_drug_interactions = db.Column(db.Text)
-    secondary_medication_food_interactions = db.Column(db.Text)
-    email = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
 
-class VitalSigns(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
-    heart_rate = db.Column(db.Integer, nullable=False)
-    blood_pressure = db.Column(db.String(20), nullable=False)
-    temperature = db.Column(db.Float, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-
-    patient = db.relationship('Patient', back_populates='vital_signs')
 
 Patient.vital_signs = db.relationship('VitalSigns', order_by=VitalSigns.timestamp, back_populates='patient')
 
@@ -323,22 +282,31 @@ def submit_vital_signs(patient_id):
 @login_required
 def registered_patients():
     if current_user.role != 'admin':
+        flash('You do not have permission to view this page.', 'danger')
         return redirect(url_for('login'))
-
-    patients = Patient.query.all()
+    
+    patients = Patient.query.filter_by(is_active=True).all()
     return render_template('registered_patients.html', patients=patients)
+
 
 @app.route('/delete_patient/<int:patient_id>', methods=['POST'])
 @login_required
 def delete_patient(patient_id):
     if current_user.role != 'admin':
+        flash('You do not have permission to delete patients.', 'danger')
         return redirect(url_for('login'))
 
     patient = Patient.query.get_or_404(patient_id)
-    db.session.delete(patient)
-    db.session.commit()
-    flash("Patient deleted successfully.", 'success')
+    try:
+        patient.is_active = False
+        db.session.commit()
+        flash("Patient deleted successfully.", 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting patient: {str(e)}", 'danger')
     return redirect(url_for('registered_patients'))
+
+
 
 @app.route('/about')
 def about():
